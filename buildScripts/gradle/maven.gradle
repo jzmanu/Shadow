@@ -71,7 +71,8 @@ def gitShortRev() {
 }
 
 def setScm(scm) {
-    scm.appendNode('connection', "https://github.com/${System.getenv("GITHUB_ACTOR")}/Shadow.git")
+//    scm.appendNode('connection', "https://github.com/${System.getenv("GITHUB_ACTOR")}/Shadow.git")
+    scm.appendNode('connection', "https://github.com/jzmanu/Shadow.git")
 
     def commit
     if ("${System.env.CI}".equalsIgnoreCase("true")) {
@@ -79,7 +80,8 @@ def setScm(scm) {
     } else {
         commit = gitShortRev()
     }
-    scm.appendNode('url', "https://github.com/${System.getenv("GITHUB_ACTOR")}/Shadow/commit/$commit")
+//    scm.appendNode('url', "https://github.com/${System.getenv("GITHUB_ACTOR")}/Shadow/commit/$commit")
+    scm.appendNode('url', "https://github.com/jzmanu/Shadow/commit/$commit")
 }
 
 def setGeneratePomFileAndDepends(publicationName) {
@@ -104,9 +106,9 @@ def sourceJar(String name, String path) {
 }
 
 def publicationVersion = project.ARTIFACT_VERSION
-def coreGroupId = 'com.tencent.shadow.core'
+def coreGroupId = 'com.manu.shadow.core'
 def corePath = 'projects/sdk/core'
-def dynamicGroupId = 'com.tencent.shadow.dynamic'
+def dynamicGroupId = 'com.manu.shadow.dynamic'
 def dynamicPath = 'projects/sdk/dynamic'
 
 publishing {
@@ -419,7 +421,15 @@ publishing {
                 url "https://maven.pkg.github.com/" + "${System.env.GITHUB_REPOSITORY}".toLowerCase()
             }
         } else {
-            mavenLocal()
+//            mavenLocal()
+            maven {
+                name = "GitHubPackages"
+                url "https://maven.pkg.github.com/jzmanu/shadow"
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
         }
     }
 }
